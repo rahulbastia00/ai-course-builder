@@ -29,14 +29,34 @@ function CreateCourse() {
         }
     ];
 
-    const { useCourseInput, setCourseInput } = useContext(UserinputContext);
-    
+    const { userCourseInput, setCourseInput } = useContext(UserinputContext);
+
     const [activeIndex, setActiveIndex] = useState(0); // Initialize to 0
-    
+
     // Fixed useEffect syntax and variable name
     useEffect(() => {
-        console.log(useCourseInput);
-    }, [useCourseInput]);
+        console.log(userCourseInput);
+    }, [userCourseInput]);
+
+    const cheackStatus = () => {
+        if (!userCourseInput) return true; // Handle undefined state safely
+
+        if (userCourseInput?.length === 0) {
+            return true;
+        }
+
+        if (activeIndex === 0 && (!userCourseInput.category || userCourseInput.category.length === 0)) {
+            return true; 
+        }
+        if (activeIndex == 1 && userCourseInput?.topic?.length == 0 || userCourseInput?.topic == undefined) {
+            return true;
+        }
+        else if(activeIndex==2&&(userCourseInput?.level==undefined||userCourseInput?.duration==undefined||userCourseInput?.displayVedio==undefined||userCourseInput?.noOfChapter==undefined)){
+            return true
+        }
+        return false;
+    };
+
 
     return (
         <div>
@@ -59,23 +79,23 @@ function CreateCourse() {
                     ))}
                 </div>
             </div>
-            
+
             <div className='px-10 md:px-20 lf:px-44 mt-10'>
                 {/* Component Rendering */}
                 {activeIndex === 0 ? <SelectCategory /> :
-                 activeIndex === 1 ? <TopicDescription /> :
-                 <SelectOption />}
-                
+                    activeIndex === 1 ? <TopicDescription /> :
+                        <SelectOption />}
+
                 {/* Next & Previous Buttons */}
                 <div className='flex justify-between mt-10'>
                     <Button disabled={activeIndex === 0} variant='outline' onClick={() => setActiveIndex(activeIndex - 1)}>
                         Previous
                     </Button>
                     {activeIndex < 2 && (
-                        <Button onClick={() => setActiveIndex(activeIndex + 1)}>Next</Button>
+                        <Button disabled={cheackStatus()} onClick={() => setActiveIndex(activeIndex + 1)}>Next</Button>
                     )}
                     {activeIndex === 2 && (
-                        <Button onClick={() => setActiveIndex(activeIndex + 1)}>Generate Course</Button>
+                        <Button disabled={cheackStatus()} onClick={() => setActiveIndex(activeIndex + 1)}>Generate Course</Button>
                     )}
                 </div>
             </div>
